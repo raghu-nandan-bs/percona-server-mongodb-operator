@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
-	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
 	api "github.com/percona/percona-server-mongodb-operator/pkg/apis/psmdb/v1"
 )
@@ -165,7 +164,7 @@ func containerArgs(ctx context.Context, cr *api.PerconaServerMongoDB, replset *a
 		"--port=" + strconv.Itoa(int(api.DefaultMongodPort)),
 		"--replSet=" + replset.Name,
 		"--storageEngine=" + string(replset.Storage.Engine),
-		"--relaxPermChecks",
+		// "--relaxPermChecks",
 		"--sslAllowInvalidCertificates",
 	}
 
@@ -194,16 +193,16 @@ func containerArgs(ctx context.Context, cr *api.PerconaServerMongoDB, replset *a
 		args = append(args, "--shardsvr")
 	}
 
-	encryptionEnabled, err := isEncryptionEnabled(cr, replset)
-	if err != nil {
-		logf.FromContext(ctx).Error(err, "failed to check if mongo encryption enabled")
-	}
+	// encryptionEnabled, err := isEncryptionEnabled(cr, replset)
+	// if err != nil {
+	// 	logf.FromContext(ctx).Error(err, "failed to check if mongo encryption enabled")
+	// }
 
-	if cr.CompareVersion("1.12.0") >= 0 && encryptionEnabled && !replset.Configuration.VaultEnabled() {
-		args = append(args, "--enableEncryption",
-			"--encryptionKeyFile="+api.MongodRESTencryptDir+"/"+api.EncryptionKeyName,
-		)
-	}
+	// if cr.CompareVersion("1.12.0") >= 0 && encryptionEnabled && !replset.Configuration.VaultEnabled() {
+	// 	args = append(args, "--enableEncryption",
+	// 		"--encryptionKeyFile="+api.MongodRESTencryptDir+"/"+api.EncryptionKeyName,
+	// 	)
+	// }
 
 	// storage
 	if replset.Storage != nil {

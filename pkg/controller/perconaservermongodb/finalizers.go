@@ -188,7 +188,6 @@ func (r *ReconcilePerconaServerMongoDB) deleteAllStatefulsets(ctx context.Contex
 			return errors.Wrapf(err, "failed to delete StatefulSet %s", sts.Name)
 		}
 	}
-
 	return nil
 }
 

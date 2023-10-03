@@ -250,7 +250,6 @@ func mongosContainer(cr *api.PerconaServerMongoDB, useConfigFile bool, cfgInstan
 func mongosContainerArgs(cr *api.PerconaServerMongoDB, resources corev1.ResourceRequirements, useConfigFile bool, cfgInstances []string) []string {
 	msSpec := cr.Spec.Sharding.Mongos
 	cfgRs := cr.Spec.Sharding.ConfigsvrReplSet
-
 	cfgRsName := cfgRs.Name
 	name, err := cfgRs.CustomReplsetName()
 	if err == nil {
@@ -268,11 +267,11 @@ func mongosContainerArgs(cr *api.PerconaServerMongoDB, resources corev1.Resource
 		"--configdb",
 		configDB,
 	}
-	if cr.CompareVersion("1.7.0") >= 0 {
-		args = append(args,
-			"--relaxPermChecks",
-		)
-	}
+	// if cr.CompareVersion("1.7.0") >= 0 {
+	// 	args = append(args,
+	// 		"--relaxPermChecks",
+	// 	)
+	// }
 
 	if cr.Spec.UnsafeConf {
 		args = append(args,

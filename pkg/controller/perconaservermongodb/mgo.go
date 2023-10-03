@@ -576,12 +576,12 @@ func (r *ReconcilePerconaServerMongoDB) handleReplsetInit(ctx context.Context, c
 		}
 
 		mongoCmd := "mongosh"
-		if !strings.Contains(outb.String(), "v6.0") {
-			mongoCmd = "mongo"
-		}
+		// if !strings.Contains(outb.String(), "v6.0") {
+		// 	mongoCmd = "mongo"
+		// }
 
 		if !cr.Spec.UnsafeConf {
-			mongoCmd += " --tls --tlsCertificateKeyFile /tmp/tls.pem --tlsAllowInvalidCertificates --tlsCAFile /etc/mongodb-ssl/ca.crt"
+			//	mongoCmd += " --tls --tlsCertificateKeyFile /tmp/tls.pem --tlsAllowInvalidCertificates --tlsCAFile /etc/mongodb-ssl/ca.crt"
 		}
 
 		cmd := []string{
