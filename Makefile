@@ -1,7 +1,15 @@
+COMMIT=$(shell git rev-parse HEAD)
+GITTAG_COMMIT := $(shell git rev-list --tags --max-count=1)
+GITTAG := $(shell git describe --abbrev=0 --tags ${GITTAG_COMMIT} 2>/dev/null || true)
 NAME ?= percona-server-mongodb-operator
-IMAGE_TAG_OWNER ?= perconalab
+IMAGE_TAG_OWNER ?= 582763096612.dkr.ecr.us-east-1.amazonaws.com
+
 IMAGE_TAG_BASE ?= $(IMAGE_TAG_OWNER)/$(NAME)
-VERSION ?= $(shell git rev-parse --abbrev-ref HEAD | sed -e 's^/^-^g; s^[.]^-^g;' | tr '[:upper:]' '[:lower:]')
+VERSION ?= $(GITTAG)
+ifneq ($(COMMIT), $(GITTAG_COMMIT))
+    VERSION := $(COMMIT)
+endif
+
 IMAGE ?= $(IMAGE_TAG_BASE):$(VERSION)
 DEPLOYDIR = ./deploy
 
@@ -72,3 +80,11 @@ controller-gen: ## Download controller-gen locally if necessary.
 KUSTOMIZE = $(shell pwd)/bin/kustomize
 kustomize: ## Download kustomize locally if necessary.
 	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v4@v4.5.3)
+
+image-release:
+	aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $(IMAGE_TAG_OWNER) 
+	docker buildx build --platform linux/arm64,linux/amd64 --output=type=registry --tag $(IMAGE) -f ./build/Dockerfile .
+
+image-local:
+	docker buildx build --platform linux/arm64,linux/amd64 --output=type=image --tag $(IMAGE) -f ./build/Dockerfile .
+
