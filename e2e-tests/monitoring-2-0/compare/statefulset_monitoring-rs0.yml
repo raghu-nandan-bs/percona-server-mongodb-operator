@@ -201,7 +201,7 @@ spec:
             - name: PMM_AGENT_SETUP_METRICS_MODE
               value: push
             - name: PMM_ADMIN_CUSTOM_PARAMS
-              value: --environment=dev-mongod
+              value: --enable-all-collectors --environment=dev-mongod
             - name: PMM_AGENT_SERVER_USERNAME
               value: api_key
             - name: PMM_AGENT_SERVER_PASSWORD
@@ -282,7 +282,7 @@ spec:
         fsGroup: 1001
       serviceAccount: default
       serviceAccountName: default
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 60
       volumes:
         - name: monitoring-mongodb-keyfile
           secret:
