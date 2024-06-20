@@ -1,3 +1,5 @@
+
+
 FROM --platform=$BUILDPLATFORM golang:1.20 AS go_builder
 WORKDIR /go/src/github.com/percona/percona-server-mongodb-operator
 
@@ -30,7 +32,7 @@ RUN find $GOPATH/pkg/mod -regextype posix-extended -iregex '.*(license|notice)(\
             sh -c 'mkdir -pv /licenses/$(echo "$0" | sed -E "s/\/(license|notice).*$//gi") \
                    && cp -v "$0" /licenses/$(echo "$0" | sed -E "s/\/(license|notice).*$//gi")' {} \;
 
-FROM gcr.io/distroless/cc-debian12 as production
+FROM debian:trixie as production
 
 LABEL name="Percona Server for MongoDB Operator" \
       vendor="Percona" \

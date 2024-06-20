@@ -11,6 +11,7 @@ ifneq ($(COMMIT), $(GITTAG_COMMIT))
 endif
 
 IMAGE ?= $(IMAGE_TAG_BASE):$(VERSION)
+INIT_IMAGE ?= $(IMAGE_TAG_BASE):init-$(VERSION)
 DEPLOYDIR = ./deploy
 
 all: build
@@ -84,6 +85,10 @@ kustomize: ## Download kustomize locally if necessary.
 image-release:
 	aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $(IMAGE_TAG_OWNER) 
 	docker buildx build --platform linux/arm64,linux/amd64 --output=type=registry --tag $(IMAGE) -f ./build/Dockerfile .
+
+init-image-release:
+	aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $(IMAGE_TAG_OWNER) 
+	docker buildx build --platform linux/arm64,linux/amd64 --output=type=registry --tag $(INIT_IMAGE) -f ./build/initContainer.Dockerfile .
 
 image-local:
 	docker buildx build --platform linux/arm64,linux/amd64 --output=type=image --tag $(IMAGE) -f ./build/Dockerfile .
